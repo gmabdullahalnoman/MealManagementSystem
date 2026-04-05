@@ -19,7 +19,7 @@ A system for bachelor or medium enterprises to manage meals and calculations.
   - Frontend templates (6 HTML pages)
   - Static assets (CSS/JS)
 
-### Next version (v0.0.1) planned : [DONE]
+### Version: 0.0.1 - All Entities Completed
 - Session entity implementation
 - Member entity implementation
 - Deposit entity implementation
@@ -29,9 +29,24 @@ A system for bachelor or medium enterprises to manage meals and calculations.
 - ClosedMonthSummary entity implementation
 - Complete all the entities
 
-### Next version (v0.0.2) planned :
-- All Repositories 
-- Implementing all 8 Repository interfaces
+## Version: 0.0.2 - All Repositories Completed
+- SessionRepository (JPA with custom queries)
+- MemberRepository (active/inactive member queries)
+- DepositRepository (sum queries by session/member)
+- ExpenseRepository (sum queries by session/date range)
+- MealRecordRepository (meal calculation queries, guest counting)
+- MemberOpeningBalanceRepository (carry forward balance queries)
+- ClosedMonthSummaryRepository (month-end summary queries)
+- MemberClosedBalanceRepository (per-member balance queries)
+
+### Next version (v0.0.3) planned:
+- All Service layer implementations
+- Business logic for:
+  - Meal rate calculation (total expense ÷ total meals)
+  - Member balance calculation
+  - Month closing logic
+  - Balance carry forward
+  - Validation rules
 
 ### Tech Stack:
 - Spring Boot 4.0.5
