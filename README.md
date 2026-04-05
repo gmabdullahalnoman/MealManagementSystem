@@ -19,7 +19,7 @@ A system for bachelor or medium enterprises to manage meals and calculations.
   - Frontend templates (6 HTML pages)
   - Static assets (CSS/JS)
 
-### Next version (v0.0.1) planned:
+### Next version (v0.0.1) planned : [DONE]
 - Session entity implementation
 - Member entity implementation
 - Deposit entity implementation
@@ -28,7 +28,10 @@ A system for bachelor or medium enterprises to manage meals and calculations.
 - MemberClosedBalance entity implementation
 - ClosedMonthSummary entity implementation
 - Complete all the entities
-- Basic CRUD operations
+
+### Next version (v0.0.2) planned :
+- All Repositories 
+- Implementing all 8 Repository interfaces
 
 ### Tech Stack:
 - Spring Boot 4.0.5
