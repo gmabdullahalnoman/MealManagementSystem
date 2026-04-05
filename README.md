@@ -6,7 +6,7 @@ A system for bachelor or medium enterprises to manage meals and calculations.
 ## Version: 0.0.0 - Project Structure Foundation
 
 ### What's in this version:
-- Spring Boot 3.1.5 project initialized
+- Spring Boot 4.0.5 project initialized
 - Maven build configuration
 - H2 database configured for development
 - Project structure created with:
@@ -22,6 +22,12 @@ A system for bachelor or medium enterprises to manage meals and calculations.
 ### Next version (v0.0.1) planned:
 - Session entity implementation
 - Member entity implementation
+- Deposit entity implementation
+- Expense entity implementation
+- MemberOpeningBalance entity implementation
+- MemberClosedBalance entity implementation
+- ClosedMonthSummary entity implementation
+- Complete all the entities
 - Basic CRUD operations
 
 ### Tech Stack:
