@@ -39,7 +39,7 @@ A system for bachelor or medium enterprises to manage meals and calculations.
 - ClosedMonthSummaryRepository (month-end summary queries)
 - MemberClosedBalanceRepository (per-member balance queries)
 
-### Next version (v0.0.3) planned:
+### Version: 0.0.3 - All Service Completed
 - All Service layer implementations
 - Business logic for:
   - Meal rate calculation (total expense ÷ total meals)
@@ -47,6 +47,11 @@ A system for bachelor or medium enterprises to manage meals and calculations.
   - Month closing logic
   - Balance carry forward
   - Validation rules
+
+### Next version (v0.0.4) planned:
+- All Controllers (REST APIs)
+- Thymeleaf templates integration
+- Dashboard with real-time calculations
 
 ### Tech Stack:
 - Spring Boot 4.0.5
