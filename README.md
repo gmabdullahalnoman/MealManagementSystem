@@ -48,10 +48,25 @@ A system for bachelor or medium enterprises to manage meals and calculations.
   - Balance carry forward
   - Validation rules
 
-### Next version (v0.0.4) planned:
-- All Controllers (REST APIs)
-- Thymeleaf templates integration
+## Version: 0.0.4 - All Controllers Completed (REST APIs + Thymeleaf Views)
+- **SessionController** - Session management (create, close, list) with REST APIs
+- **MemberController** - Member CRUD, activate/deactivate with REST APIs
+- **DepositController** - Deposit entry, totals, delete with REST APIs
+- **ExpenseController** - Expense entry, totals, update/delete with REST APIs
+- **MealController** - Meal entry, duplicate prevention, guest tracking with REST APIs
+- **ReportController** - Session reports, month closing, balance carry forward with REST APIs
+
+### Next version (v0.0.5) planned:
+- Complete Thymeleaf templates (HTML pages)
 - Dashboard with real-time calculations
+- CSS styling for responsive design
+- JavaScript for dynamic updates
+
+### API Endpoints Available:
+- GET/POST/PUT/DELETE endpoints for all entities
+- Real-time calculation endpoints
+- Report generation endpoints
+- Month closing endpoint with automatic carry forward
 
 ### Tech Stack:
 - Spring Boot 4.0.5
