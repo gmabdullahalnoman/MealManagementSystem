@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(title='Expenses', content=~{::content})}">
+<body>
+    <div th:fragment="content">
+        <!-- Summary Card -->
+        <div class="card bg-danger text-white mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">Total Expenses (Current Session)</h5>
+                        <h2 class="mb-0" th:text="${totalExpenses != null ? #numbers.formatDecimal(totalExpenses, 1, 2) + ' BDT' : '0 BDT'}">0 BDT</h2>
+                    </div>
+                    <i class="fas fa-receipt fa-4x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Add Expense Form -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-plus"></i> Add New Expense</h5>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/expenses/add}" method="post" class="row g-3">
+                    <div class="col-md-2">
+                        <label class="form-label">Date</label>
+                        <input type="date" name="expenseDate" class="form-control" th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Amount (BDT)</label>
+                        <input type="number" name="amount" step="0.01" class="form-control" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Description</label>
+                        <input type="text" name="description" class="form-control" required>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Spent By (Optional)</label>
+                        <select name="memberId" class="form-select">
+                            <option value="">-- Select Member --</option>
+                            <option th:each="member : ${members}" th:value="${member.id}" th:text="${member.name}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-save"></i> Add
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Expenses List -->
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-list"></i> Expense History</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="expensesTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Spent By</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="expense : ${expenses}">
+                                <td th:text="${#temporals.format(expense.expenseDate, 'dd-MM-yyyy')}"></td>
+                                <td th:text="${expense.description}"></td>
+                                <td class="fw-bold text-danger" th:text="${#numbers.formatDecimal(expense.amount, 1, 2)} + ' BDT'"></td>
+                                <td th:text="${expense.member != null ? expense.member.name : '-'}"></td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" 
+                                            data-bs-target="#editExpenseModal"
+                                            th:data-id="${expense.id}"
+                                            th:data-amount="${expense.amount}"
+                                            th:data-description="${expense.description}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <form th:action="@{/expenses/{id}/delete(id=${expense.id})}" method="post" 
+                                          onsubmit="return confirm('Delete this expense?')" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr th:if="${expenses.empty}">
+                                <td colspan="5" class="text-center text-muted">No expenses recorded yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Edit Expense Modal -->
+        <div class="modal fade" id="editExpenseModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form th:action="@{/expenses/update/{id}(id=${editExpenseId})}" method="post">
+                        <div class="modal-header bg-warning text-white">
+                            <h5 class="modal-title">Edit Expense</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Amount (BDT)</label>
+                                <input type="number" name="amount" step="0.01" class="form-control" th:value="${editExpenseAmount}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <input type="text" name="description" class="form-control" th:value="${editExpenseDescription}" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-warning">Update Expense</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            $('#editExpenseModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var id = button.data('id');
+                var amount = button.data('amount');
+                var description = button.data('description');
+                
+                var modal = $(this);
+                modal.find('input[name="amount"]').val(amount);
+                modal.find('input[name="description"]').val(description);
+                modal.find('form').attr('action', '/expenses/update/' + id);
+            });
+        </script>
+    </div>
+</body>
+</html>

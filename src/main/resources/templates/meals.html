@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(title='Meals', content=~{::content})}">
+<body>
+    <div th:fragment="content">
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title">Total Meals (Current Session)</h5>
+                                <h2 class="mb-0" th:text="${totalMeals != null ? totalMeals : '0'}">0</h2>
+                            </div>
+                            <i class="fas fa-utensils fa-4x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title">Current Meal Rate</h5>
+                                <h2 class="mb-0" th:text="${mealRate != null ? #numbers.formatDecimal(mealRate, 1, 2) + ' BDT' : 'Not calculated'}">0 BDT</h2>
+                            </div>
+                            <i class="fas fa-calculator fa-4x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Date Selector -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label">Select Date</label>
+                        <input type="date" name="date" class="form-control" th:value="${selectedDate}" required>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-calendar-day"></i> View Meals
+                        </button>
+                    </div>
+                    <div class="col-md-7 text-end">
+                        <a th:href="@{/meals/summary}" class="btn btn-info">
+                            <i class="fas fa-chart-bar"></i> Meal Summary Report
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Add Meal Form -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-plus"></i> Add Meal for <span th:text="${#temporals.format(selectedDate, 'dd-MM-yyyy')}"></span></h5>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/meals/add}" method="post" class="row g-3">
+                    <input type="hidden" name="mealDate" th:value="${selectedDate}">
+                    <div class="col-md-3">
+                        <label class="form-label">Member</label>
+                        <select name="memberId" class="form-select" required>
+                            <option th:each="member : ${members}" th:value="${member.id}" th:text="${member.name}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Meal Type</label>
+                        <select name="mealType" class="form-select" required id="mealTypeSelect">
+                            <option value="LUNCH">Lunch</option>
+                            <option value="DINNER">Dinner</option>
+                            <option value="BOTH">Both (Lunch + Dinner)</option>
+                            <option value="GUEST">Guest</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2" id="guestCountDiv" style="display: none;">
+                        <label class="form-label">Guest Count</label>
+                        <input type="number" name="guestCount" class="form-control" min="1" value="1">
+                    </div>
+                    <div class="col-md-3" id="hostMemberDiv" style="display: none;">
+                        <label class="form-label">Host Member (who pays)</label>
+                        <select name="hostMemberId" class="form-select">
+                            <option th:each="member : ${members}" th:value="${member.id}" th:text="${member.name}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="fas fa-save"></i> Add Meal
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Meals List -->
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-list"></i> Meals for <span th:text="${#temporals.format(selectedDate, 'dd-MM-yyyy')}"></span></h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Meal Type</th>
+                                <th>Guest Count</th>
+                                <th>Host Member</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="meal : ${meals}">
+                                <td th:text="${meal.member.name}"></td>
+                                <td>
+                                    <span th:if="${meal.mealType == 'LUNCH'}" class="badge bg-info">Lunch</span>
+                                    <span th:if="${meal.mealType == 'DINNER'}" class="badge bg-secondary">Dinner</span>
+                                    <span th:if="${meal.mealType == 'BOTH'}" class="badge bg-primary">Both</span>
+                                    <span th:if="${meal.mealType == 'GUEST'}" class="badge bg-warning">Guest</span>
+                                </td>
+                                <td th:text="${meal.guestCount > 0 ? meal.guestCount : '-'}"></td>
+                                <td th:text="${meal.hostMember != null ? meal.hostMember.name : '-'}"></td>
+                                <td>
+                                    <form th:action="@{/meals/{id}/delete(id=${meal.id})}" method="post" 
+                                          th:with="mealDate=${selectedDate}"
+                                          onsubmit="return confirm('Delete this meal record?')">
+                                        <input type="hidden" name="mealDate" th:value="${selectedDate}">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr th:if="${meals.empty}">
+                                <td colspan="5" class="text-center text-muted">No meals recorded for this date</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            // Show/hide guest fields based on meal type
+            $('#mealTypeSelect').change(function() {
+                if ($(this).val() == 'GUEST') {
+                    $('#guestCountDiv').show();
+                    $('#hostMemberDiv').show();
+                } else {
+                    $('#guestCountDiv').hide();
+                    $('#hostMemberDiv').hide();
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>

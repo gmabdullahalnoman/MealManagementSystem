@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(title='Dashboard', content=~{::content})}">
+<body>
+    <div th:fragment="content">
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title">Total Deposit</h6>
+                                <h3 class="mb-0" th:text="${totalDeposit != null ? #numbers.formatDecimal(totalDeposit, 1, 2) + ' BDT' : '0 BDT'}">0 BDT</h3>
+                            </div>
+                            <i class="fas fa-money-bill-wave fa-3x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card text-white bg-danger">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title">Total Expense</h6>
+                                <h3 class="mb-0" th:text="${totalExpense != null ? #numbers.formatDecimal(totalExpense, 1, 2) + ' BDT' : '0 BDT'}">0 BDT</h3>
+                            </div>
+                            <i class="fas fa-receipt fa-3x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title">Total Meals</h6>
+                                <h3 class="mb-0" th:text="${totalMeals != null ? totalMeals : '0'}">0</h3>
+                            </div>
+                            <i class="fas fa-utensils fa-3x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card text-white bg-warning">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title">Current Meal Rate</h6>
+                                <h3 class="mb-0" th:text="${mealRate != null ? #numbers.formatDecimal(mealRate, 1, 2) + ' BDT' : '0 BDT'}">0 BDT</h3>
+                            </div>
+                            <i class="fas fa-calculator fa-3x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-bolt"></i> Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <a th:href="@{/deposits}" class="btn btn-outline-success w-100">Add Deposit</a>
+                            </div>
+                            <div class="col-md-3">
+                                <a th:href="@{/expenses}" class="btn btn-outline-danger w-100">Add Expense</a>
+                            </div>
+                            <div class="col-md-3">
+                                <a th:href="@{/meals}" class="btn btn-outline-info w-100">Add Meal</a>
+                            </div>
+                            <div class="col-md-3">
+                                <a th:href="@{/reports/month-close}" class="btn btn-outline-warning w-100">Close Month</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Member Balance Summary -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-users"></i> Member Balance Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Member</th>
+                                        <th>Deposit</th>
+                                        <th>Meals</th>
+                                        <th>Cost</th>
+                                        <th>Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="memberReport : ${memberReports}">
+                                        <td th:text="${memberReport.member.name}"></td>
+                                        <td th:text="${#numbers.formatDecimal(memberReport.totalDeposit, 1, 2)} + ' BDT'"></td>
+                                        <td th:text="${memberReport.totalMeals}"></td>
+                                        <td th:text="${#numbers.formatDecimal(memberReport.totalCost, 1, 2)} + ' BDT'"></td>
+                                        <td th:class="${memberReport.balance >= 0} ? 'text-success fw-bold' : 'text-danger fw-bold'" 
+                                            th:text="${#numbers.formatDecimal(memberReport.balance, 1, 2)} + ' BDT'"></td>
+                                    </tr>
+                                    <tr th:if="${memberReports.empty}">
+                                        <td colspan="5" class="text-center">No members found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

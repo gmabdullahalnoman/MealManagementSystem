@@ -1,8 +1,6 @@
 # MealManagementSystem
 A system for bachelor or medium enterprises to manage meals and calculations.
 
-# Meal Management System (MMS)
-
 ## Version: 0.0.0 - Project Structure Foundation
 
 ### What's in this version:
@@ -56,11 +54,23 @@ A system for bachelor or medium enterprises to manage meals and calculations.
 - **MealController** - Meal entry, duplicate prevention, guest tracking with REST APIs
 - **ReportController** - Session reports, month closing, balance carry forward with REST APIs
 
-### Next version (v0.0.5) planned:
-- Complete Thymeleaf templates (HTML pages)
-- Dashboard with real-time calculations
-- CSS styling for responsive design
-- JavaScript for dynamic updates
+## Version: 0.0.5 - Complete Frontend & Dashboard
+
+- ✅ All 8 Entities with JPA mappings
+- ✅ All 8 Repositories with custom queries
+- ✅ All 7 Services with business logic
+- ✅ All 6 Controllers (REST APIs + Thymeleaf views)
+- ✅ Complete Frontend with Bootstrap 5
+- ✅ Dashboard with real-time statistics
+- ✅ Member management (CRUD with soft delete)
+- ✅ Deposit & Expense tracking
+- ✅ Meal entry with duplicate prevention
+- ✅ Guest meal handling with host member
+- ✅ Month closing with balance carry forward
+- ✅ Report generation (active & closed months)
+### Current Status: 🚧 Being Debugged - Issues Being Fixed:
+- 🐛 Template fragment resolution (layout inheritance)
+- 🐛 Dashboard data binding
 
 ### API Endpoints Available:
 - GET/POST/PUT/DELETE endpoints for all entities
@@ -75,11 +85,43 @@ A system for bachelor or medium enterprises to manage meals and calculations.
 - H2 Database (dev)
 - Maven
 
-### How to run:
-```bash
-mvn spring-boot:run
+## How to Run
 
-Then visit: http://localhost:8080
+### Prerequisites:
+- JDK 17
+- Maven (or use wrapper)
+
+### Steps:
+```bash
+# Clone repository
+git clone https://github.com/YOUR_USERNAME/MealManagementSystem.git
+
+# Navigate to project
+cd MealManagementSystem
+
+# Run the application
+.\mvnw spring-boot:run   (Windows)
+./mvnw spring-boot:run   (Mac/Linux)
+
+# Open browser
+http://localhost:8080
+
+Features Implemented
+Feature	                        Status
+Session/Month Management	      ✅
+Member CRUD with Soft Delete  	✅
+Deposit Tracking	              ✅
+Expense Tracking	              ✅
+Daily Meal Entry	              ✅
+Duplicate Meal Prevention	      ✅
+Guest Meal with Host Member	    ✅
+Real-time Meal Rate Calculation	✅
+Member Balance Calculation	    ✅
+Month Closing	                  ✅
+Balance Carry Forward	          ✅
+Dashboard with Stats	          ✅
+Reports (Active & Closed)	      ✅
+Print Reports
 
 License:
 Apache 2.0
