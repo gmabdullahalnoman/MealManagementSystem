@@ -1,6 +1,7 @@
 package com.mealmanager.MealManagementSystem.service;
 
 import com.mealmanager.MealManagementSystem.entity.Session;
+import com.mealmanager.MealManagementSystem.exception.ResourceNotFoundException;
 import com.mealmanager.MealManagementSystem.repository.SessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,7 @@ public class SessionService {
 
     public Session closeSession(Long id) {    // Close a session (no further edits allowed)
         Session session = sessionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Session not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Session with ID " + id + " not found"));
         
         session.setIsClosed(true);
         session.setIsActive(false);
@@ -57,7 +58,7 @@ public class SessionService {
 
     public boolean isSessionClosed(Long id) {    // Check if session is closed
         Session session = sessionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Session not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Session with ID " + id + " not found"));
         return session.getIsClosed();
     }
 }

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <div th:replace="layout.html :: head"></div>
+    <title>Create Session | Meal Management System</title>
+</head>
+<body>
+<div th:replace="layout.html :: navbar"></div>
+
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">
+                        <i class="bi bi-calendar2-plus"></i> Create New Session
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form action="/sessions/create" method="post" class="needs-validation" novalidate>
+                        
+                        <!-- Session Name Field -->
+                        <div class="mb-3">
+                            <label for="nameInput" class="form-label fw-bold">Session Name</label>
+                            <input type="text" 
+                                   class="form-control form-control-lg" 
+                                   id="nameInput" 
+                                   name="name" 
+                                   placeholder="e.g., January 2024 (House Expenses)"
+                                   required>
+                            <div class="valid-feedback">Session name looks good!</div>
+                            <div class="invalid-feedback">Please provide a session name.</div>
+                            <small class="text-muted">Use a descriptive name like month and year</small>
+                        </div>
+                        
+                        <!-- Start Date Field -->
+                        <div class="mb-4">
+                            <label for="startDateInput" class="form-label fw-bold">Start Date</label>
+                            <input type="date" 
+                                   class="form-control form-control-lg" 
+                                   id="startDateInput" 
+                                   name="startDate" 
+                                   required>
+                            <div class="valid-feedback">Start date looks good!</div>
+                            <div class="invalid-feedback">Please provide a valid start date.</div>
+                        </div>
+                        
+                        <!-- Info Alert -->
+                        <div class="alert alert-info" role="alert">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Note:</strong> Sessions are used to group expenses and meals. You can close a session to finalize calculations and start a new one.
+                        </div>
+                        
+                        <!-- Buttons -->
+                        <div class="d-grid gap-2 d-sm-flex">
+                            <button type="submit" class="btn btn-success btn-lg flex-grow-1">
+                                <i class="bi bi-check-circle"></i> Create Session
+                            </button>
+                            <a href="/sessions" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="layout.html :: footer"></div>
+
+<script>
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
+</body>
+</html>

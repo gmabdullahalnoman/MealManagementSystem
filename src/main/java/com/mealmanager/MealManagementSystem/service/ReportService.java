@@ -2,6 +2,9 @@ package com.mealmanager.MealManagementSystem.service;
 
 import com.mealmanager.MealManagementSystem.entity.*;
 import com.mealmanager.MealManagementSystem.repository.*;
+import com.mealmanager.MealManagementSystem.exception.ResourceNotFoundException;
+import com.mealmanager.MealManagementSystem.exception.InvalidOperationException;
+import com.mealmanager.MealManagementSystem.exception.SessionClosedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,10 +93,10 @@ public class ReportService {
     @Transactional
     public Map<String, Object> closeMonth(Long sessionId) {
         Session session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new RuntimeException("Session not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Session with ID " + sessionId + " not found"));
         
         if (session.getIsClosed()) {
-            throw new RuntimeException("Session is already closed");
+            throw new SessionClosedException("Session " + sessionId + " is already closed");
         }
         
         // Calculate final values
@@ -184,14 +187,14 @@ public class ReportService {
     // Get report for closed session (from saved summaries)
     public Map<String, Object> getClosedSessionReport(Long sessionId) {
         Session session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new RuntimeException("Session not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Session with ID " + sessionId + " not found"));
         
         if (!session.getIsClosed()) {
-            throw new RuntimeException("Session is not closed yet. Use getSessionReport for active session.");
+            throw new InvalidOperationException("Session " + sessionId + " is not closed yet. Use getSessionReport for active session.");
         }
         
         ClosedMonthSummary summary = closedMonthSummaryRepository.findBySession(session)
-                .orElseThrow(() -> new RuntimeException("Summary not found for this closed session"));
+                .orElseThrow(() -> new ResourceNotFoundException("Summary for session " + sessionId + " not found"));
         
         List<MemberClosedBalance> memberBalances = memberClosedBalanceRepository.findBySession(session);
         

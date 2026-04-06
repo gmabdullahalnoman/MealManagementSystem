@@ -25,9 +25,6 @@ public class DashboardController {
     private ExpenseService expenseService;
 
     @Autowired
-    private MealService mealService;
-
-    @Autowired
     private CalculationService calculationService;
 
     @Autowired

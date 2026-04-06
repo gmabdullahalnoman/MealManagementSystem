@@ -1,10 +1,12 @@
 package com.mealmanager.MealManagementSystem.controller;
 
+import com.mealmanager.MealManagementSystem.dto.ApiResponse;
 import com.mealmanager.MealManagementSystem.entity.ClosedMonthSummary;
 import com.mealmanager.MealManagementSystem.entity.Session;
 import com.mealmanager.MealManagementSystem.service.ReportService;
 import com.mealmanager.MealManagementSystem.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -88,34 +90,34 @@ public class ReportController {
     // ========== REST API Endpoints ==========
     
     @GetMapping("/api/session/{sessionId}")
-    @ResponseBody
-    public Map<String, Object> getSessionReportApi(@PathVariable Long sessionId) {
-        return reportService.getSessionReport(sessionId);
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getSessionReportApi(@PathVariable Long sessionId) {
+        Map<String, Object> report = reportService.getSessionReport(sessionId);
+        return ResponseEntity.ok(ApiResponse.success(report, "Session report retrieved successfully"));
     }
     
     @GetMapping("/api/closed/{sessionId}")
-    @ResponseBody
-    public Map<String, Object> getClosedSessionReportApi(@PathVariable Long sessionId) {
-        return reportService.getClosedSessionReport(sessionId);
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getClosedSessionReportApi(@PathVariable Long sessionId) {
+        Map<String, Object> report = reportService.getClosedSessionReport(sessionId);
+        return ResponseEntity.ok(ApiResponse.success(report, "Closed session report retrieved successfully"));
     }
     
     @PostMapping("/api/close/{sessionId}")
-    @ResponseBody
-    public Map<String, Object> closeMonthApi(@PathVariable Long sessionId) {
-        return reportService.closeMonth(sessionId);
+    public ResponseEntity<ApiResponse<Map<String, Object>>> closeMonthApi(@PathVariable Long sessionId) {
+        Map<String, Object> report = reportService.closeMonth(sessionId);
+        return ResponseEntity.ok(ApiResponse.success(report, "Month closed successfully"));
     }
     
     @GetMapping("/api/closed-months")
-    @ResponseBody
-    public List<ClosedMonthSummary> getAllClosedMonthsApi() {
-        return reportService.getAllClosedMonths();
+    public ResponseEntity<ApiResponse<List<ClosedMonthSummary>>> getAllClosedMonthsApi() {
+        List<ClosedMonthSummary> closedMonths = reportService.getAllClosedMonths();
+        return ResponseEntity.ok(ApiResponse.success(closedMonths, "Closed months retrieved successfully"));
     }
     
     @GetMapping("/api/active-report")
-    @ResponseBody
-    public Map<String, Object> getActiveSessionReportApi() {
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getActiveSessionReportApi() {
         Session activeSession = sessionService.getActiveSession()
                 .orElseThrow(() -> new RuntimeException("No active session found"));
-        return reportService.getSessionReport(activeSession.getId());
+        Map<String, Object> report = reportService.getSessionReport(activeSession.getId());
+        return ResponseEntity.ok(ApiResponse.success(report, "Active session report retrieved successfully"));
     }
 }

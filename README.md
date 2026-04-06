@@ -1,126 +1,220 @@
-# MealManagementSystem
-A system for bachelor or medium enterprises to manage meals and calculations.
+# Meal Management System
+> A modern, enterprise-grade application for managing household/small business meal expenses and calculations
 
-## Version: 0.0.0 - Project Structure Foundation
+---
 
-### What's in this version:
-- Spring Boot 4.0.5 project initialized
-- Maven build configuration
-- H2 database configured for development
-- Project structure created with:
-  - Controller layer (6 controllers)
-  - Service layer (7 services)
-  - Repository layer (8 repositories)
-  - Entity layer (8 entities)
-  - DTO layer (6 DTOs)
-  - Configuration layer
-  - Frontend templates (6 HTML pages)
-  - Static assets (CSS/JS)
+## Table of Contents
+- [Overview](#overview)
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [Getting Started](#getting-started)
+- [API Documentation](#api-documentation)
+- [Modernization Highlights](#modernization-highlights)
+- [Project Structure](#project-structure)
+- [Development](#development)
 
-### Version: 0.0.1 - All Entities Completed
-- Session entity implementation
-- Member entity implementation
-- Deposit entity implementation
-- Expense entity implementation
-- MemberOpeningBalance entity implementation
-- MemberClosedBalance entity implementation
-- ClosedMonthSummary entity implementation
-- Complete all the entities
+---
 
-## Version: 0.0.2 - All Repositories Completed
-- SessionRepository (JPA with custom queries)
-- MemberRepository (active/inactive member queries)
-- DepositRepository (sum queries by session/member)
-- ExpenseRepository (sum queries by session/date range)
-- MealRecordRepository (meal calculation queries, guest counting)
-- MemberOpeningBalanceRepository (carry forward balance queries)
-- ClosedMonthSummaryRepository (month-end summary queries)
-- MemberClosedBalanceRepository (per-member balance queries)
+## Project History
 
-### Version: 0.0.3 - All Service Completed
-- All Service layer implementations
-- Business logic for:
-  - Meal rate calculation (total expense ÷ total meals)
-  - Member balance calculation
-  - Month closing logic
-  - Balance carry forward
-  - Validation rules
+### User's Original Contribution
+- Initial Spring Boot project structure and setup
+- Core business logic and database entities  
+- Basic REST controllers for CRUD operations
+- Initial HTML templates with basic styling
 
-## Version: 0.0.4 - All Controllers Completed (REST APIs + Thymeleaf Views)
-- **SessionController** - Session management (create, close, list) with REST APIs
-- **MemberController** - Member CRUD, activate/deactivate with REST APIs
-- **DepositController** - Deposit entry, totals, delete with REST APIs
-- **ExpenseController** - Expense entry, totals, update/delete with REST APIs
-- **MealController** - Meal entry, duplicate prevention, guest tracking with REST APIs
-- **ReportController** - Session reports, month closing, balance carry forward with REST APIs
+### AI Modernization Contribution(Github Copilot)
+- Implemented complete exception handling
+- Added Spring Security 6.x with proper FilterChain configuration
+- Standardized all APIs with APIResponse<T> wrapper for consistent responses
+- Added validation framework with jakarta annotations across 6 DTOs
+- Upgraded frontend to Bootstrap 5.3.2 with modern UI, animations, and 3 new templates
+- Added Flyway database migrations for safe schema management
+- Fixed 3 runtime configuration issues to make app fully functional
 
-## Version: 0.0.5 - Complete Frontend & Dashboard
+---
 
-- ✅ All 8 Entities with JPA mappings
-- ✅ All 8 Repositories with custom queries
-- ✅ All 7 Services with business logic
-- ✅ All 6 Controllers (REST APIs + Thymeleaf views)
-- ✅ Complete Frontend with Bootstrap 5
-- ✅ Dashboard with real-time statistics
-- ✅ Member management (CRUD with soft delete)
-- ✅ Deposit & Expense tracking
-- ✅ Meal entry with duplicate prevention
-- ✅ Guest meal handling with host member
-- ✅ Month closing with balance carry forward
-- ✅ Report generation (active & closed months)
-### Current Status: Being Debugged - Issues Being Fixed:
-- Template fragment resolution (layout inheritance)
-- Dashboard data binding
+## Overview
 
-### API Endpoints Available:
-- GET/POST/PUT/DELETE endpoints for all entities
-- Real-time calculation endpoints
-- Report generation endpoints
-- Month closing endpoint with automatic carry forward
+This application helps groups (families, roommates, small teams) manage shared meal expenses efficiently:
+- Track meal costs per person
+- Manage deposits from members
+- Calculate fair distribution of expenses
+- Generate detailed reports with settlement amounts
+- Session-based management for monthly/period-based accounting
 
-### Tech Stack:
-- Spring Boot 4.0.5
-- Spring Data JPA
-- Thymeleaf
-- H2 Database (dev)
-- Maven
+---
 
-## How to Run
+## Key Features
 
-### Prerequisites:
-- JDK 17
-- Maven (or use wrapper)
+### Dashboard
+- Real-time summary of deposits, expenses, and meals
+- Quick access to all management functions
+- Member settlement status at a glance
+- Visual gradient cards with modern styling
 
-### Steps:
-```bash
-# Clone repository
-git clone https://github.com/YOUR_USERNAME/MealManagementSystem.git
+### Member Management
+- Create and manage household/team members
+- Mark members as active or inactive
+- Track member-specific transactions
+- Modern form validation
 
-# Navigate to project
-cd MealManagementSystem
+### Financial Management
+- Deposits: Track money contributed by members
+- Expenses: Record shared expenses with automatic distribution
+- Meal Tracking: Record who ate and calculate costs
+- Reports: Detailed member-wise settlement calculations
 
-# Run the application
-.\mvnw spring-boot:run   (Windows)
-./mvnw spring-boot:run   (Mac/Linux)
+### Reporting & Analytics
+- Session-wise financial reports
+- Per-member expense breakdown
+- Settlement calculations (who owes whom)
+- Close month functionality with carry-forward balances
+- Historical data retrieval
 
-# Open browser
-http://localhost:8080
+---
 
-Features Implemented
-Session/Month Management	      
-Member CRUD with Soft Delete  	
-Deposit Tracking	              
-Expense Tracking	              
-Daily Meal Entry	              
-Duplicate Meal Prevention	      
-Guest Meal with Host Member	    
-Real-time Meal Rate Calculation	
-Member Balance Calculation	    
-Month Closing	                  
-Balance Carry Forward	          
-Dashboard with Stats	          
-Reports (Active & Closed)	      
-Print Reports
+## Technology Stack
+
+### Backend
+- Framework: Spring Boot 4.0.5
+- Language: Java 17+
+- Build: Maven 3.9+
+- Database: H2 (development), Flyway for migrations
+- Security: Spring Security 6.x with BCrypt
+- API Docs: Springdoc OpenAPI (Swagger UI)
+- Validation: Jakarta Bean Validation
+
+### Frontend
+- Template Engine: Thymeleaf
+- CSS Framework: Bootstrap 5.3.2 (responsive)
+- Icons: Bootstrap Icons
+- Styling: Custom CSS with animations
+- Form Validation: HTML5 + Client-side JS
+
+### Tools & Libraries
+- Project Lombok: Reduces boilerplate code
+- Mockito: Unit testing framework
+- JUnit 5: Testing framework
+- Spring Data JPA: ORM and data access
+
+---
+
+## Getting Started
+
+### Prerequisites
+- Java 17+ (JDK)
+- Maven 3.9+ (or use included mvnw)
+- Git
+
+### Installation
+
+1. **Clone the repository**
+   git clone <repository-url>
+   cd MealManagementSystem
+   ```
+
+2. **Build the project**
+   # Windows
+   ./mvnw.cmd clean install
+   # Linux/Mac
+   ./mvnw clean install
+
+3. **Run the application**
+   # Windows
+   ./mvnw.cmd spring-boot:run
+   # Linux/Mac
+   ./mvnw spring-boot:run
+
+4. **Access the application**
+   - Web UI: http://localhost:8080
+   - Swagger API Docs: http://localhost:8080/swagger-ui.html
+   - H2 Console: http://localhost:8080/h2-console
+
+---
+
+### Main API Endpoints
+
+#### Members
+- `GET /api/members/all` - All members
+- `GET /api/members/{id}` - Get specific member
+- `POST /api/members/create` - Create member
+- `PUT /api/members/{id}` - Update member
+- `DELETE /api/members/{id}/deactivate` - Deactivate member
+
+#### Sessions
+- `GET /api/sessions/active` - Get active session
+- `GET /api/sessions/all` - All sessions
+- `POST /api/sessions/create` - Create new session
+- `POST /api/sessions/{id}/close` - Close session
+
+#### Deposits
+- `GET /api/deposits/session/{sessionId}` - Get session deposits
+- `GET /api/deposits/session/{sessionId}/total` - Total deposits
+- `POST /api/deposits/add` - Add deposit
+
+#### Expenses
+- `GET /api/expenses/session/{sessionId}` - Get expenses
+- `POST /api/expenses/add` - Add expense
+- `PUT /api/expenses/{id}` - Update expense
+- `DELETE /api/expenses/{id}` - Delete expense
+
+#### Meals
+- `GET /api/meals/session/{sessionId}` - Get meals
+- `POST /api/meals/add` - Record meal
+- `GET /api/meals/session/{sessionId}/per-member` - Meals per member
+
+#### Reports
+- `GET /api/reports/session/{sessionId}` - Get session report
+- `GET /api/reports/active-report` - Get active session report
+- `POST /api/reports/close/{sessionId}` - Close month and settle
+
+---
+
+### IDE Setup
+
+#### IntelliJ IDEA
+1. Open project folder
+2. IntelliJ will auto-detect Maven configuration
+3. Mark `src/main/java` as Sources Root
+4. Mark `src/main/resources` as Resources Root
+5. Install Thymeleaf plugin (optional)
+
+#### VS Code
+1. Install Java Extension Pack
+2. Open project folder
+3. VS Code will auto-configure for Maven
+4. Extensions recommended:
+   - Spring Boot Extension Pack
+   - Thymeleaf Now
+   - Bootstrap Class Completion
+
+---
+
+## Security
+
+- Spring Security 6.x configured
+- CSRF protection enabled
+- BCrypt password encoding
+- CORS properly configured
+- H2 console disabled in production
+- SQL logging disabled (performance & security)
+- Input validation on all DTOs
+- Security headers configured
+
+---
+
+## Database
+
+### Schema
+- members: User participants
+- sessions: Accounting periods
+- deposits: Money contributions
+- expenses: Shared costs
+- meal_records: Meal tracking
+- member_opening_balances: Period opening balances
+- member_closed_balances: Period closing balances
+- closed_month_summaries: Historical summaries
 
 License:
 Apache 2.0

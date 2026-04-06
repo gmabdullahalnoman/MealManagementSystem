@@ -3,6 +3,9 @@ package com.mealmanager.MealManagementSystem.service;
 import com.mealmanager.MealManagementSystem.entity.Expense;
 import com.mealmanager.MealManagementSystem.entity.Member;
 import com.mealmanager.MealManagementSystem.entity.Session;
+import com.mealmanager.MealManagementSystem.exception.InvalidOperationException;
+import com.mealmanager.MealManagementSystem.exception.ResourceNotFoundException;
+import com.mealmanager.MealManagementSystem.exception.SessionClosedException;
 import com.mealmanager.MealManagementSystem.repository.ExpenseRepository;
 import com.mealmanager.MealManagementSystem.repository.MemberRepository;
 import com.mealmanager.MealManagementSystem.repository.SessionRepository;
@@ -29,17 +32,17 @@ public class ExpenseService {
     @Transactional    // Add a new expense
     public Expense addExpense(Long sessionId, LocalDate expenseDate, Double amount, String description, Long memberId) {
         Session session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new RuntimeException("Session not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Session with ID " + sessionId + " not found"));
 
         if (session.getIsClosed()) {
-            throw new RuntimeException("Cannot add expense to a closed session");
+            throw new SessionClosedException("Cannot add expense to a closed session");
         }
 
         Expense expense = new Expense(session, expenseDate, amount, description);
 
         if (memberId != null) {
             Member member = memberRepository.findById(memberId)
-                    .orElseThrow(() -> new RuntimeException("Member not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Member with ID " + memberId + " not found"));
             expense.setMember(member);
         }
 
@@ -48,13 +51,13 @@ public class ExpenseService {
 
     public List<Expense> getExpensesBySession(Long sessionId) {    // Get all expenses for a session
         Session session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new RuntimeException("Session not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Session with ID " + sessionId + " not found"));
         return expenseRepository.findBySessionOrderByExpenseDateDesc(session);
     }
 
     public Double getTotalExpensesBySession(Long sessionId) {    // Get total expenses for a session
         Session session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new RuntimeException("Session not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Session with ID " + sessionId + " not found"));
         Double total = expenseRepository.sumBySession(session);
         return total != null ? total : 0.0;
     }
@@ -66,10 +69,10 @@ public class ExpenseService {
     @Transactional
     public void deleteExpense(Long expenseId) {    // Delete expense (only if session not closed)
         Expense expense = expenseRepository.findById(expenseId)
-                .orElseThrow(() -> new RuntimeException("Expense not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Expense with ID " + expenseId + " not found"));
 
         if (expense.getSession().getIsClosed()) {
-            throw new RuntimeException("Cannot delete expense from a closed session");
+            throw new SessionClosedException("Cannot delete expense from a closed session");
         }
 
         expenseRepository.delete(expense);
@@ -79,10 +82,10 @@ public class ExpenseService {
     @Transactional    // Update expense
     public Expense updateExpense(Long expenseId, Double amount, String description) {
         Expense expense = expenseRepository.findById(expenseId)
-                .orElseThrow(() -> new RuntimeException("Expense not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Expense with ID " + expenseId + " not found"));
 
         if (expense.getSession().getIsClosed()) {
-            throw new RuntimeException("Cannot update expense in a closed session");
+            throw new SessionClosedException("Cannot update expense in a closed session");
         }
 
         if (amount != null && amount > 0) {

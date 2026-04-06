@@ -1,9 +1,13 @@
 package com.mealmanager.MealManagementSystem.controller;
 
+import com.mealmanager.MealManagementSystem.dto.ApiResponse;
+import com.mealmanager.MealManagementSystem.dto.SessionDTO;
 import com.mealmanager.MealManagementSystem.entity.Session;
 import com.mealmanager.MealManagementSystem.service.SessionService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -50,34 +54,33 @@ public class SessionController {
     // ========== REST API Endpoints ==========
     
     @GetMapping("/api/active")
-    @ResponseBody
-    public Session getActiveSessionApi() {
-        return sessionService.getActiveSession().orElse(null);
+    public ResponseEntity<ApiResponse<Session>> getActiveSessionApi() {
+        Session session = sessionService.getActiveSession().orElse(null);
+        return ResponseEntity.ok(ApiResponse.success(session, "Active session retrieved successfully"));
     }
     
     @GetMapping("/api/all")
-    @ResponseBody
-    public List<Session> getAllSessionsApi() {
-        return sessionService.getAllSessions();
+    public ResponseEntity<ApiResponse<List<Session>>> getAllSessionsApi() {
+        List<Session> sessions = sessionService.getAllSessions();
+        return ResponseEntity.ok(ApiResponse.success(sessions, "Sessions retrieved successfully"));
     }
     
     @GetMapping("/api/{id}")
-    @ResponseBody
-    public Session getSessionByIdApi(@PathVariable Long id) {
-        return sessionService.getSessionById(id)
+    public ResponseEntity<ApiResponse<Session>> getSessionByIdApi(@PathVariable Long id) {
+        Session session = sessionService.getSessionById(id)
                 .orElseThrow(() -> new RuntimeException("Session not found"));
+        return ResponseEntity.ok(ApiResponse.success(session, "Session retrieved successfully"));
     }
     
     @PostMapping("/api/create")
-    @ResponseBody
-    public Session createSessionApi(@RequestParam String name, 
-                                    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate) {
-        return sessionService.createSession(name, startDate);
+    public ResponseEntity<ApiResponse<Session>> createSessionApi(@Valid @RequestBody SessionDTO sessionDTO) {
+        Session session = sessionService.createSession(sessionDTO.getName(), sessionDTO.getStartDate());
+        return ResponseEntity.ok(ApiResponse.success(session, "Session created successfully"));
     }
     
     @PostMapping("/api/{id}/close")
-    @ResponseBody
-    public Session closeSessionApi(@PathVariable Long id) {
-        return sessionService.closeSession(id);
+    public ResponseEntity<ApiResponse<Void>> closeSessionApi(@PathVariable Long id) {
+        sessionService.closeSession(id);
+        return ResponseEntity.ok(ApiResponse.success("Session closed successfully"));
     }
 }

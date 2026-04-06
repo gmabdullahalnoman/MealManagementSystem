@@ -1,12 +1,15 @@
 package com.mealmanager.MealManagementSystem.controller;
 
+import com.mealmanager.MealManagementSystem.dto.ApiResponse;
+import com.mealmanager.MealManagementSystem.dto.MealDTO;
 import com.mealmanager.MealManagementSystem.entity.MealRecord;
 import com.mealmanager.MealManagementSystem.service.MealService;
 import com.mealmanager.MealManagementSystem.service.SessionService;
 import com.mealmanager.MealManagementSystem.service.MemberService;
-import com.mealmanager.MealManagementSystem.service.CalculationService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +29,6 @@ public class MealController {
 
     @Autowired
     private MemberService memberService;
-
-    @Autowired
-    private CalculationService calculationService;
 
     // ========== Thymeleaf Views ==========
     
@@ -88,53 +88,46 @@ public class MealController {
     // ========== REST API Endpoints ==========
     
     @GetMapping("/api/session/{sessionId}")
-    @ResponseBody
-    public List<MealRecord> getMealsBySessionApi(@PathVariable Long sessionId) {
-        return mealService.getMealsBySession(sessionId);
+    public ResponseEntity<ApiResponse<List<MealRecord>>> getMealsBySessionApi(@PathVariable Long sessionId) {
+        List<MealRecord> meals = mealService.getMealsBySession(sessionId);
+        return ResponseEntity.ok(ApiResponse.success(meals, "Meals retrieved successfully"));
     }
     
     @GetMapping("/api/session/{sessionId}/date/{date}")
-    @ResponseBody
-    public List<MealRecord> getMealsBySessionAndDateApi(@PathVariable Long sessionId,
+    public ResponseEntity<ApiResponse<List<MealRecord>>> getMealsBySessionAndDateApi(@PathVariable Long sessionId,
                                                          @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return mealService.getMealsBySessionAndDate(sessionId, date);
+        List<MealRecord> meals = mealService.getMealsBySessionAndDate(sessionId, date);
+        return ResponseEntity.ok(ApiResponse.success(meals, "Meals retrieved successfully for date: " + date));
     }
     
     @GetMapping("/api/session/{sessionId}/total")
-    @ResponseBody
-    public Integer getTotalMealCountApi(@PathVariable Long sessionId) {
-        return mealService.getTotalMealCountBySession(sessionId);
+    public ResponseEntity<ApiResponse<Integer>> getTotalMealCountApi(@PathVariable Long sessionId) {
+        Integer total = mealService.getTotalMealCountBySession(sessionId);
+        return ResponseEntity.ok(ApiResponse.success(total, "Total meal count retrieved successfully"));
     }
     
     @GetMapping("/api/session/{sessionId}/per-member")
-    @ResponseBody
-    public List<Object[]> getMealCountPerMemberApi(@PathVariable Long sessionId) {
-        return mealService.getMealCountPerMember(sessionId);
+    public ResponseEntity<ApiResponse<List<Object[]>>> getMealCountPerMemberApi(@PathVariable Long sessionId) {
+        List<Object[]> mealsPerMember = mealService.getMealCountPerMember(sessionId);
+        return ResponseEntity.ok(ApiResponse.success(mealsPerMember, "Meals per member retrieved successfully"));
     }
     
     @PostMapping("/api/add")
-    @ResponseBody
-    public MealRecord addMealApi(@RequestParam Long sessionId,
-                                 @RequestParam Long memberId,
-                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate mealDate,
-                                 @RequestParam String mealType,
-                                 @RequestParam(required = false) Integer guestCount,
-                                 @RequestParam(required = false) Long hostMemberId) {
-        return mealService.addMeal(sessionId, memberId, mealDate, mealType, guestCount, hostMemberId);
+    public ResponseEntity<ApiResponse<MealRecord>> addMealApi(@Valid @RequestBody MealDTO mealDTO) {
+        MealRecord meal = mealService.addMeal(mealDTO.getSessionId(), mealDTO.getMemberId(), 
+                mealDTO.getMealDate(), mealDTO.getMealType(), mealDTO.getGuestCount(), mealDTO.getHostMemberId());
+        return ResponseEntity.ok(ApiResponse.success(meal, "Meal added successfully"));
     }
     
     @PutMapping("/api/{id}")
-    @ResponseBody
-    public MealRecord updateMealApi(@PathVariable Long id,
-                                    @RequestParam(required = false) String mealType,
-                                    @RequestParam(required = false) Integer guestCount) {
-        return mealService.updateMeal(id, mealType, guestCount);
+    public ResponseEntity<ApiResponse<MealRecord>> updateMealApi(@PathVariable Long id, @Valid @RequestBody MealDTO mealDTO) {
+        MealRecord meal = mealService.updateMeal(id, mealDTO.getMealType(), mealDTO.getGuestCount());
+        return ResponseEntity.ok(ApiResponse.success(meal, "Meal updated successfully"));
     }
     
     @DeleteMapping("/api/{id}")
-    @ResponseBody
-    public String deleteMealApi(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteMealApi(@PathVariable Long id) {
         mealService.deleteMeal(id);
-        return "Meal record deleted successfully";
+        return ResponseEntity.ok(ApiResponse.success("Meal deleted successfully"));
     }
 }

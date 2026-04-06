@@ -1,11 +1,15 @@
 package com.mealmanager.MealManagementSystem.controller;
 
+import com.mealmanager.MealManagementSystem.dto.ApiResponse;
+import com.mealmanager.MealManagementSystem.dto.ExpenseDTO;
 import com.mealmanager.MealManagementSystem.entity.Expense;
 import com.mealmanager.MealManagementSystem.service.ExpenseService;
 import com.mealmanager.MealManagementSystem.service.SessionService;
 import com.mealmanager.MealManagementSystem.service.MemberService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -73,53 +77,43 @@ public class ExpenseController {
         return "expense-form";
     }
     
-    @PostMapping("/update/{id}")
-    public String updateExpense(@PathVariable Long id, @RequestParam Double amount, @RequestParam String description) {
-        expenseService.updateExpense(id, amount, description);
-        return "redirect:/expenses";
-    }
-    
     // ========== REST API Endpoints ==========
     
     @GetMapping("/api/session/{sessionId}")
-    @ResponseBody
-    public List<Expense> getExpensesBySessionApi(@PathVariable Long sessionId) {
-        return expenseService.getExpensesBySession(sessionId);
+    public ResponseEntity<ApiResponse<List<Expense>>> getExpensesBySessionApi(@PathVariable Long sessionId) {
+        List<Expense> expenses = expenseService.getExpensesBySession(sessionId);
+        return ResponseEntity.ok(ApiResponse.success(expenses, "Expenses retrieved successfully"));
     }
     
     @GetMapping("/api/session/{sessionId}/total")
-    @ResponseBody
-    public Double getTotalExpensesBySessionApi(@PathVariable Long sessionId) {
-        return expenseService.getTotalExpensesBySession(sessionId);
+    public ResponseEntity<ApiResponse<Double>> getTotalExpensesBySessionApi(@PathVariable Long sessionId) {
+        Double total = expenseService.getTotalExpensesBySession(sessionId);
+        return ResponseEntity.ok(ApiResponse.success(total, "Total expenses calculated successfully"));
     }
     
     @GetMapping("/api/date-range")
-    @ResponseBody
-    public List<Expense> getExpensesByDateRangeApi(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+    public ResponseEntity<ApiResponse<List<Expense>>> getExpensesByDateRangeApi(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                                     @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return expenseService.getExpensesByDateRange(startDate, endDate);
+        List<Expense> expenses = expenseService.getExpensesByDateRange(startDate, endDate);
+        return ResponseEntity.ok(ApiResponse.success(expenses, "Expenses in date range retrieved successfully"));
     }
     
     @PostMapping("/api/add")
-    @ResponseBody
-    public Expense addExpenseApi(@RequestParam Long sessionId,
-                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate expenseDate,
-                                 @RequestParam Double amount,
-                                 @RequestParam String description,
-                                 @RequestParam(required = false) Long memberId) {
-        return expenseService.addExpense(sessionId, expenseDate, amount, description, memberId);
+    public ResponseEntity<ApiResponse<Expense>> addExpenseApi(@Valid @RequestBody ExpenseDTO expenseDTO) {
+        Expense expense = expenseService.addExpense(expenseDTO.getSessionId(), expenseDTO.getExpenseDate(),
+                expenseDTO.getAmount(), expenseDTO.getDescription(), expenseDTO.getMemberId());
+        return ResponseEntity.ok(ApiResponse.success(expense, "Expense added successfully"));
     }
     
     @PutMapping("/api/{id}")
-    @ResponseBody
-    public Expense updateExpenseApi(@PathVariable Long id, @RequestParam Double amount, @RequestParam String description) {
-        return expenseService.updateExpense(id, amount, description);
+    public ResponseEntity<ApiResponse<Expense>> updateExpenseApi(@PathVariable Long id, @Valid @RequestBody ExpenseDTO expenseDTO) {
+        Expense expense = expenseService.updateExpense(id, expenseDTO.getAmount(), expenseDTO.getDescription());
+        return ResponseEntity.ok(ApiResponse.success(expense, "Expense updated successfully"));
     }
     
     @DeleteMapping("/api/{id}")
-    @ResponseBody
-    public String deleteExpenseApi(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteExpenseApi(@PathVariable Long id) {
         expenseService.deleteExpense(id);
-        return "Expense deleted successfully";
+        return ResponseEntity.ok(ApiResponse.success("Expense deleted successfully"));
     }
 }

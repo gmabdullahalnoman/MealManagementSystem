@@ -1,8 +1,13 @@
 package com.mealmanager.MealManagementSystem.controller;
 
+import com.mealmanager.MealManagementSystem.dto.ApiResponse;
+import com.mealmanager.MealManagementSystem.dto.MemberDTO;
 import com.mealmanager.MealManagementSystem.entity.Member;
+import com.mealmanager.MealManagementSystem.exception.ResourceNotFoundException;
 import com.mealmanager.MealManagementSystem.service.MemberService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +46,7 @@ public class MemberController {
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         Member member = memberService.getMemberById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+                .orElseThrow(() -> new com.mealmanager.MealManagementSystem.exception.ResourceNotFoundException("Member with ID " + id + " not found"));
         model.addAttribute("member", member);
         return "member-form";
     }
@@ -67,39 +72,45 @@ public class MemberController {
     // ========== REST API Endpoints ==========
     
     @GetMapping("/api/all")
-    @ResponseBody
-    public List<Member> getAllMembersApi() {
-        return memberService.getAllMembers();
+    public ResponseEntity<ApiResponse<List<Member>>> getAllMembersApi() {
+        List<Member> members = memberService.getAllMembers();
+        return ResponseEntity.ok(ApiResponse.success(members, "Members retrieved successfully"));
     }
     
     @GetMapping("/api/active")
-    @ResponseBody
-    public List<Member> getActiveMembersApi() {
-        return memberService.getAllActiveMembers();
+    public ResponseEntity<ApiResponse<List<Member>>> getActiveMembersApi() {
+        List<Member> members = memberService.getAllActiveMembers();
+        return ResponseEntity.ok(ApiResponse.success(members, "Active members retrieved successfully"));
     }
     
     @GetMapping("/api/{id}")
-    @ResponseBody
-    public Member getMemberByIdApi(@PathVariable Long id) {
-        return memberService.getMemberById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+    public ResponseEntity<ApiResponse<Member>> getMemberByIdApi(@PathVariable Long id) {
+        Member member = memberService.getMemberById(id)
+                .orElseThrow(() -> new com.mealmanager.MealManagementSystem.exception.ResourceNotFoundException("Member with ID " + id + " not found"));
+        return ResponseEntity.ok(ApiResponse.success(member, "Member retrieved successfully"));
     }
     
     @PostMapping("/api/create")
-    @ResponseBody
-    public Member createMemberApi(@RequestParam String name, @RequestParam(required = false) String phone) {
-        return memberService.createMember(name, phone);
+    public ResponseEntity<ApiResponse<Member>> createMemberApi(@Valid @RequestBody MemberDTO memberDTO) {
+        Member member = memberService.createMember(memberDTO.getName(), memberDTO.getPhone());
+        return ResponseEntity.ok(ApiResponse.success(member, "Member created successfully"));
     }
     
     @PutMapping("/api/{id}")
-    @ResponseBody
-    public Member updateMemberApi(@PathVariable Long id, @RequestParam String name, @RequestParam(required = false) String phone) {
-        return memberService.updateMember(id, name, phone);
+    public ResponseEntity<ApiResponse<Member>> updateMemberApi(@PathVariable Long id, @Valid @RequestBody MemberDTO memberDTO) {
+        Member member = memberService.updateMember(id, memberDTO.getName(), memberDTO.getPhone());
+        return ResponseEntity.ok(ApiResponse.success(member, "Member updated successfully"));
     }
     
     @DeleteMapping("/api/{id}/deactivate")
-    @ResponseBody
-    public Member deactivateMemberApi(@PathVariable Long id) {
-        return memberService.deactivateMember(id);
+    public ResponseEntity<ApiResponse<Void>> deactivateMemberApi(@PathVariable Long id) {
+        memberService.deactivateMember(id);
+        return ResponseEntity.ok(ApiResponse.success("Member deactivated successfully"));
+    }
+    
+    @PostMapping("/api/{id}/activate")
+    public ResponseEntity<ApiResponse<Void>> activateMemberApi(@PathVariable Long id) {
+        memberService.activateMember(id);
+        return ResponseEntity.ok(ApiResponse.success("Member activated successfully"));
     }
 }

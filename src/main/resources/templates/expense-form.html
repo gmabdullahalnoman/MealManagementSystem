@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <div th:replace="layout.html :: head"></div>
+    <title th:text="${expense?.id} ? 'Edit Expense' : 'Add Expense' + ' | Meal Management System'"></title>
+</head>
+<body>
+<div th:replace="layout.html :: navbar"></div>
+
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0" th:text="${expense?.id} ? 'Edit Expense' : 'Add New Expense'"></h3>
+                </div>
+                <div class="card-body">
+                    <form th:action="${expense?.id} ? @{/expenses/update/{id}(id=${expense.id})} : @{/expenses/add}" 
+                          method="post" class="needs-validation" novalidate>
+                        
+                        <!-- Expense Date Field -->
+                        <div class="mb-3">
+                            <label for="expenseDateInput" class="form-label fw-bold">Expense Date</label>
+                            <input type="date" 
+                                   class="form-control form-control-lg" 
+                                   id="expenseDateInput" 
+                                   name="expenseDate" 
+                                   th:value="${expense?.expenseDate}"
+                                   required>
+                            <div class="valid-feedback">Date looks good!</div>
+                            <div class="invalid-feedback">Please provide a valid date.</div>
+                        </div>
+                        
+                        <!-- Amount Field -->
+                        <div class="mb-3">
+                            <label for="amountInput" class="form-label fw-bold">Amount (Rs.)</label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text">Rs.</span>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="amountInput" 
+                                       name="amount" 
+                                       th:value="${expense?.amount}"
+                                       placeholder="0.00"
+                                       step="0.01"
+                                       min="0"
+                                       required>
+                            </div>
+                            <div class="valid-feedback">Amount looks good!</div>
+                            <div class="invalid-feedback">Please provide a valid amount.</div>
+                        </div>
+                        
+                        <!-- Description Field -->
+                        <div class="mb-3">
+                            <label for="descriptionInput" class="form-label fw-bold">Description</label>
+                            <textarea class="form-control form-control-lg" 
+                                      id="descriptionInput" 
+                                      name="description" 
+                                      rows="3"
+                                      placeholder="e.g., Grocery shopping, Electricity bill"
+                                      th:text="${expense?.description}"
+                                      required></textarea>
+                            <div class="valid-feedback">Description looks good!</div>
+                            <div class="invalid-feedback">Please provide a description.</div>
+                        </div>
+                        
+                        <!-- Member Selection (for shared expenses) -->
+                        <div class="mb-4" th:if="${members}">
+                            <label for="memberSelect" class="form-label fw-bold">Assigned Member <span class="text-muted">(Optional)</span></label>
+                            <select class="form-select form-select-lg" id="memberSelect" name="memberId">
+                                <option value="">-- General Expense --</option>
+                                <option th:each="member : ${members}" 
+                                        th:value="${member.id}"
+                                        th:text="${member.name}"
+                                        th:selected="${expense?.memberId} ? ${expense.memberId == member.id} : false"></option>
+                            </select>
+                            <small class="text-muted">Leave empty if this is a shared/general expense</small>
+                        </div>
+                        
+                        <!-- Buttons -->
+                        <div class="d-grid gap-2 d-sm-flex">
+                            <button type="submit" class="btn btn-warning btn-lg flex-grow-1 text-dark fw-bold">
+                                <i class="bi bi-check-circle"></i>
+                                <span th:text="${expense?.id} ? 'Update Expense' : 'Add Expense'"></span>
+                            </button>
+                            <a href="/expenses" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="layout.html :: footer"></div>
+
+<script>
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
+</body>
+</html>

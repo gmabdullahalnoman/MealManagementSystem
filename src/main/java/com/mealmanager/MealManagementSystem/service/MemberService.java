@@ -1,6 +1,7 @@
 package com.mealmanager.MealManagementSystem.service;
 
 import com.mealmanager.MealManagementSystem.entity.Member;
+import com.mealmanager.MealManagementSystem.exception.ResourceNotFoundException;
 import com.mealmanager.MealManagementSystem.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class MemberService {
     @Transactional
     public Member updateMember(Long id, String name, String phone) {    // Update member
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Member with ID " + id + " not found"));
         
         if (name != null && !name.isEmpty()) {
             member.setName(name);
@@ -52,7 +53,7 @@ public class MemberService {
     @Transactional
     public Member deactivateMember(Long id) {     // Deactivate member (soft delete)
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Member with ID " + id + " not found"));
         
         member.setIsActive(false);
         return memberRepository.save(member);
@@ -61,7 +62,7 @@ public class MemberService {
     @Transactional
     public Member activateMember(Long id) {    // Activate member
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Member with ID " + id + " not found"));
         
         member.setIsActive(true);
         return memberRepository.save(member);
