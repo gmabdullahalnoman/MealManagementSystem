@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${title} + ' - Meal Management System'">MMS</title>
@@ -16,7 +16,7 @@
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
-            <a class="navbar-brand" th:href="@{/}">
+            <a class="navbar-brand" th:href="@{/dashboard}">
                 <i class="fas fa-utensils"></i> Meal Management System
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -66,13 +66,14 @@
 
     <!-- Main Content -->
     <div class="container-fluid mt-4">
-        <div th:replace="~{fragments/alerts :: alerts}"></div>
+        <!-- Session Info Fragment -->
         <div th:replace="~{fragments/session-info :: sessionInfo}"></div>
         
+        <!-- Alerts Fragment -->
+        <div th:replace="~{fragments/alerts :: alerts}"></div>
+        
         <!-- Page Content -->
-        <div th:remove="tag">
-            <div th:replace="${content} :: content"></div>
-        </div>
+        <div th:replace="${content}"></div>
     </div>
 
     <!-- Bootstrap JS Bundle -->

@@ -68,9 +68,9 @@ A system for bachelor or medium enterprises to manage meals and calculations.
 - ✅ Guest meal handling with host member
 - ✅ Month closing with balance carry forward
 - ✅ Report generation (active & closed months)
-### Current Status: 🚧 Being Debugged - Issues Being Fixed:
-- 🐛 Template fragment resolution (layout inheritance)
-- 🐛 Dashboard data binding
+### Current Status: Being Debugged - Issues Being Fixed:
+- Template fragment resolution (layout inheritance)
+- Dashboard data binding
 
 ### API Endpoints Available:
 - GET/POST/PUT/DELETE endpoints for all entities
@@ -107,20 +107,19 @@ cd MealManagementSystem
 http://localhost:8080
 
 Features Implemented
-Feature	                        Status
-Session/Month Management	      ✅
-Member CRUD with Soft Delete  	✅
-Deposit Tracking	              ✅
-Expense Tracking	              ✅
-Daily Meal Entry	              ✅
-Duplicate Meal Prevention	      ✅
-Guest Meal with Host Member	    ✅
-Real-time Meal Rate Calculation	✅
-Member Balance Calculation	    ✅
-Month Closing	                  ✅
-Balance Carry Forward	          ✅
-Dashboard with Stats	          ✅
-Reports (Active & Closed)	      ✅
+Session/Month Management	      
+Member CRUD with Soft Delete  	
+Deposit Tracking	              
+Expense Tracking	              
+Daily Meal Entry	              
+Duplicate Meal Prevention	      
+Guest Meal with Host Member	    
+Real-time Meal Rate Calculation	
+Member Balance Calculation	    
+Month Closing	                  
+Balance Carry Forward	          
+Dashboard with Stats	          
+Reports (Active & Closed)	      
 Print Reports
 
 License:
