@@ -1,203 +1,286 @@
-# Meal Management System
-> A modern, enterprise-grade application for managing household/small business meal expenses and calculations
+# Meal Management System - REST API
 
----
+> A production-ready REST API for managing household/small business meal expenses and calculations
 
-## Table of Contents
+## 📋 Table of Contents
+
 - [Overview](#overview)
 - [Features](#features)
 - [Technology Stack](#technology-stack)
-- [Getting Started](#getting-started)
+- [Quick Start](#quick-start)
+- [Configuration](#configuration)
 - [API Documentation](#api-documentation)
-- [Modernization Highlights](#modernization-highlights)
 - [Project Structure](#project-structure)
 - [Development](#development)
 
 ---
 
-## Project History
+## 🎯 Overview
 
-### User's Original Contribution
-- Initial Spring Boot project structure and setup
-- Core business logic and database entities  
-- Basic REST controllers for CRUD operations
-- Initial HTML templates with basic styling
+The Meal Management System is a REST API designed to help groups (families, roommates, small teams, organizations) manage shared meal expenses efficiently:
 
-### AI Modernization Contribution(Github Copilot)
-- Implemented complete exception handling
-- Added Spring Security 6.x with proper FilterChain configuration
-- Standardized all APIs with APIResponse<T> wrapper for consistent responses
-- Added validation framework with jakarta annotations across 6 DTOs
-- Upgraded frontend to Bootstrap 5.3.2 with modern UI, animations, and 3 new templates
-- Added Flyway database migrations for safe schema management
-- Fixed 3 runtime configuration issues to make app fully functional
+- **Track Meals**: Record meal events with costs and participants
+- **Manage Deposits**: Accept and manage financial contributions from members
+- **Track Expenses**: Record all expenses related to meal management
+- **Generate Reports**: Get detailed reports with settlement calculations
+- **Session Management**: Organize accounting by sessions/periods
+- **Fair Distribution**: Automatically calculate fair expense distribution
 
----
+## ✨ Key Features
 
-## Overview
+- **RESTful API**: Standard REST endpoints for all operations
+- **Real-time Reports**: Get instant settlement calculations
+- **Member Management**: Add, activate, and manage group members
+- **Session-based Accounting**: Separate accounting periods
+- **Comprehensive Validation**: Input validation with detailed error messages
+- **API Documentation**: Auto-generated Swagger/OpenAPI documentation
+- **PostgreSQL Database**: Production-grade database with migrations
+- **Error Handling**: Standardized error responses
 
-This application helps groups (families, roommates, small teams) manage shared meal expenses efficiently:
-- Track meal costs per person
-- Manage deposits from members
-- Calculate fair distribution of expenses
-- Generate detailed reports with settlement amounts
-- Session-based management for monthly/period-based accounting
+## 🛠 Technology Stack
 
----
+- **Java 17** - Latest LTS version
+- **Spring Boot 4.0.5** - Modern Spring framework
+- **Spring Data JPA** - Object-relational mapping
+- **PostgreSQL** - Primary database
+- **Flyway** - Database migrations
+- **SpringDoc OpenAPI 2.0.2** - API documentation (Swagger)
+- **Jakarta Validation** - Request validation
+- **Lombok** - Code generation
 
-## Key Features
-
-### Dashboard
-- Real-time summary of deposits, expenses, and meals
-- Quick access to all management functions
-- Member settlement status at a glance
-- Visual gradient cards with modern styling
-
-### Member Management
-- Create and manage household/team members
-- Mark members as active or inactive
-- Track member-specific transactions
-- Modern form validation
-
-### Financial Management
-- Deposits: Track money contributed by members
-- Expenses: Record shared expenses with automatic distribution
-- Meal Tracking: Record who ate and calculate costs
-- Reports: Detailed member-wise settlement calculations
-
-### Reporting & Analytics
-- Session-wise financial reports
-- Per-member expense breakdown
-- Settlement calculations (who owes whom)
-- Close month functionality with carry-forward balances
-- Historical data retrieval
-
----
-
-## Technology Stack
-
-### Backend
-- Framework: Spring Boot 4.0.5
-- Language: Java 17+
-- Build: Maven 3.9+
-- Database: H2 (development), Flyway for migrations
-- Security: Spring Security 6.x with BCrypt
-- API Docs: Springdoc OpenAPI (Swagger UI)
-- Validation: Jakarta Bean Validation
-
-### Frontend
-- Template Engine: Thymeleaf
-- CSS Framework: Bootstrap 5.3.2 (responsive)
-- Icons: Bootstrap Icons
-- Styling: Custom CSS with animations
-- Form Validation: HTML5 + Client-side JS
-
-### Tools & Libraries
-- Project Lombok: Reduces boilerplate code
-- Mockito: Unit testing framework
-- JUnit 5: Testing framework
-- Spring Data JPA: ORM and data access
-
----
-
-## Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-- Java 17+ (JDK)
-- Maven 3.9+ (or use included mvnw)
-- Git
 
-### Installation
+- Java 17 or higher
+- PostgreSQL 12+ installed and running
+- Maven 3.8+
 
-1. **Clone the repository**
-   git clone <repository-url>
-   cd MealManagementSystem
-   ```
+### 1. Clone & Setup
 
-2. **Build the project**
-   # Windows
-   ./mvnw.cmd clean install
-   # Linux/Mac
-   ./mvnw clean install
+```bash
+git clone <repository-url>
+cd MealManagementSystem
+```
 
-3. **Run the application**
-   # Windows
-   ./mvnw.cmd spring-boot:run
-   # Linux/Mac
-   ./mvnw spring-boot:run
+### 2. Configure PostgreSQL
 
-4. **Access the application**
-   - Web UI: http://localhost:8080
-   - Swagger API Docs: http://localhost:8080/swagger-ui.html
-   - H2 Console: http://localhost:8080/h2-console
+Create a PostgreSQL database:
 
----
+```sql
+CREATE DATABASE mealmanagementdb;
+```
 
-### Main API Endpoints
+### 3. Configure Application
 
-#### Members
-- `GET /api/members/all` - All members
-- `GET /api/members/{id}` - Get specific member
-- `POST /api/members/create` - Create member
-- `PUT /api/members/{id}` - Update member
-- `DELETE /api/members/{id}/deactivate` - Deactivate member
+Update `src/main/resources/application.properties`:
 
-#### Sessions
-- `GET /api/sessions/active` - Get active session
-- `GET /api/sessions/all` - All sessions
-- `POST /api/sessions/create` - Create new session
-- `POST /api/sessions/{id}/close` - Close session
+```properties
+# Database Configuration
+spring.datasource.url=jdbc:postgresql://localhost:5432/mealmanagementdb
+spring.datasource.username=postgres
+spring.datasource.password=your_password
+```
 
-#### Deposits
-- `GET /api/deposits/session/{sessionId}` - Get session deposits
-- `GET /api/deposits/session/{sessionId}/total` - Total deposits
-- `POST /api/deposits/add` - Add deposit
+### 4. Build & Run
 
-#### Expenses
-- `GET /api/expenses/session/{sessionId}` - Get expenses
-- `POST /api/expenses/add` - Add expense
-- `PUT /api/expenses/{id}` - Update expense
-- `DELETE /api/expenses/{id}` - Delete expense
+```bash
+# Build the project
+./mvnw clean install
 
-#### Meals
-- `GET /api/meals/session/{sessionId}` - Get meals
-- `POST /api/meals/add` - Record meal
-- `GET /api/meals/session/{sessionId}/per-member` - Meals per member
+# Run the application
+./mvnw spring-boot:run
+```
 
-#### Reports
-- `GET /api/reports/session/{sessionId}` - Get session report
-- `GET /api/reports/active-report` - Get active session report
-- `POST /api/reports/close/{sessionId}` - Close month and settle
+The API will be available at `http://localhost:8080`
+
+Swagger UI: `http://localhost:8080/swagger-ui.html`
 
 ---
 
-### IDE Setup
+## ⚙️ Configuration
 
-#### IntelliJ IDEA
-1. Open project folder
-2. IntelliJ will auto-detect Maven configuration
-3. Mark `src/main/java` as Sources Root
-4. Mark `src/main/resources` as Resources Root
-5. Install Thymeleaf plugin (optional)
+### application.properties
 
-#### VS Code
-1. Install Java Extension Pack
-2. Open project folder
-3. VS Code will auto-configure for Maven
-4. Extensions recommended:
-   - Spring Boot Extension Pack
-   - Thymeleaf Now
-   - Bootstrap Class Completion
+Key configuration properties:
+
+```properties
+# Server
+server.port=8080
+
+# Database
+spring.datasource.url=jdbc:postgresql://localhost:5432/mealmanagementdb
+spring.datasource.username=postgres
+spring.datasource.password=postgres
+
+# JPA/Hibernate
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=validate
+
+# Flyway
+spring.flyway.enabled=true
+spring.flyway.locations=classpath:db/migration
+
+# Logging
+logging.level.com.mealmanager=DEBUG
+logging.level.root=INFO
+```
+
+### Development Profile
+
+Create `application-dev.properties` for local development (automatically used with `-Dspring.profiles.active=dev`)
 
 ---
 
-## Security
+## 📚 API Documentation
 
-- Spring Security 6.x configured
-- CSRF protection enabled
-- BCrypt password encoding
-- CORS properly configured
-- H2 console disabled in production
+### Accessing API Documentation
+
+Once the application is running:
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **OpenAPI JSON**: http://localhost:8080/v3/api-docs
+- **OpenAPI YAML**: http://localhost:8080/v3/api-docs.yaml
+
+All endpoints are documented with descriptions, parameters, and response examples.
+
+### Core API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| **Members** ||||
+| GET | `/api/members` | List all members |
+| GET | `/api/members/{id}` | Get member details |
+| GET | `/api/members/active` | List active members |
+| POST | `/api/members` | Create new member |
+| PUT | `/api/members/{id}` | Update member |
+| PATCH | `/api/members/{id}/activate` | Activate member |
+| PATCH | `/api/members/{id}/deactivate` | Deactivate member |
+| **Sessions** ||||
+| GET | `/api/sessions` | List all sessions |
+| GET | `/api/sessions/{id}` | Get session details |
+| GET | `/api/sessions/active` | Get active session |
+| POST | `/api/sessions` | Create new session |
+| POST | `/api/sessions/{id}/close` | Close a session |
+| **Deposits** ||||
+| GET | `/api/deposits/session/{sessionId}` | Get session deposits |
+| GET | `/api/deposits/session/{sessionId}/total` | Get total deposits |
+| POST | `/api/deposits` | Record deposit |
+| DELETE | `/api/deposits/{id}` | Delete deposit |
+| **Expenses** ||||
+| GET | `/api/expenses/session/{sessionId}` | Get session expenses |
+| GET | `/api/expenses/session/{sessionId}/total` | Get total expenses |
+| POST | `/api/expenses` | Record expense |
+| PUT | `/api/expenses/{id}` | Update expense |
+| DELETE | `/api/expenses/{id}` | Delete expense |
+| **Meals** ||||
+| GET | `/api/meals/session/{sessionId}` | Get session meals |
+| POST | `/api/meals` | Record meal |
+| PUT | `/api/meals/{id}` | Update meal |
+| DELETE | `/api/meals/{id}` | Delete meal |
+| **Reports** ||||
+| GET | `/api/reports/session/{sessionId}` | Get session report |
+| GET | `/api/reports/active-session` | Get active session report |
+| GET | `/api/reports/closed-months` | List closed months |
+| POST | `/api/reports/close/{sessionId}` | Close session |
+
+### Example Requests
+
+**Create a Member:**
+```bash
+curl -X POST http://localhost:8080/api/members \
+  -H "Content-Type: application/json" \
+  -d '{"name":"John Doe","phone":"01711234567"}'
+```
+
+**Create a Session:**
+```bash
+curl -X POST http://localhost:8080/api/sessions \
+  -H "Content-Type: application/json" \
+  -d '{"name":"April 2026","startDate":"2026-04-01"}'
+```
+
+**Record a Deposit:**
+```bash
+curl -X POST http://localhost:8080/api/deposits \
+  -H "Content-Type: application/json" \
+  -d '{"sessionId":1,"memberId":1,"amount":5000,"depositDate":"2026-04-07"}'
+```
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+├── main/
+│   ├── java/com/mealmanager/MealManagementSystem/
+│   │   ├── controller/          # REST Controllers
+│   │   ├── service/             # Business logic
+│   │   ├── repository/          # Data access layer
+│   │   ├── entity/              # JPA entities
+│   │   ├── dto/                 # Data transfer objects
+│   │   ├── exception/           # Custom exceptions & handlers
+│   │   ├── config/              # Spring configurations
+│   │   └── util/                # Utility classes
+│   └── resources/
+│       ├── application.properties
+│       └── db/migration/        # Flyway migrations
+└── test/                        # Test classes
+```
+
+---
+
+## 🔧 Development
+
+### Running Tests
+
+```bash
+./mvnw test
+```
+
+### Adding Database Migrations
+
+Create a new migration file in `src/main/resources/db/migration/`:
+
+```sql
+-- V2__Add_new_feature.sql
+ALTER TABLE members ADD COLUMN new_field VARCHAR(100);
+```
+
+Flyway automatically runs migrations on startup.
+
+### Error Response Format
+
+All errors return a standardized format:
+
+```json
+{
+  "status": 400,
+  "message": "Validation failed",
+  "error": "Validation Failed",
+  "timestamp": "2026-04-07T10:30:00",
+  "path": "/api/members"
+}
+```
+
+---
+
+## 📝 Notes
+
+- All endpoints are prefixed with `/api/`
+- API responses use standardized `ApiResponse<T>` wrapper
+- Validation errors include field-level details
+- Swagger UI is automatically available at `/swagger-ui.html`
+- Database schema is managed by Flyway
+- Request validation uses Jakarta Bean Validation annotations
+
+## 📄 License
+
+This project is licensed under the Apache 2.0 License - see the LICENSE file for details.
+
+---
+
+**Built with ❤️ for efficient meal management**
 - SQL logging disabled (performance & security)
 - Input validation on all DTOs
 - Security headers configured

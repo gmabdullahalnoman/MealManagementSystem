@@ -28,47 +28,45 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
-    // ========== REST API ==========
-
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Member>>> getAllMembersApi() {
+    public ResponseEntity<ApiResponse<List<Member>>> getAllMembers() {
         List<Member> members = memberService.getAllMembers();
         return ResponseEntity.ok(ApiResponse.success(members, "Members retrieved successfully"));
     }
 
     @GetMapping("/active")
-    public ResponseEntity<ApiResponse<List<Member>>> getActiveMembersApi() {
+    public ResponseEntity<ApiResponse<List<Member>>> getActiveMembers() {
         List<Member> members = memberService.getAllActiveMembers();
         return ResponseEntity.ok(ApiResponse.success(members, "Active members retrieved successfully"));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Member>> getMemberByIdApi(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Member>> getMemberById(@PathVariable Long id) {
         Member member = memberService.getMemberById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Member with ID " + id + " not found"));
         return ResponseEntity.ok(ApiResponse.success(member, "Member retrieved successfully"));
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Member>> createMemberApi(@Valid @RequestBody MemberDTO memberDTO) {
+    public ResponseEntity<ApiResponse<Member>> createMember(@Valid @RequestBody MemberDTO memberDTO) {
         Member member = memberService.createMember(memberDTO.getName(), memberDTO.getPhone());
         return ResponseEntity.status(201).body(ApiResponse.success(member, "Member created successfully"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Member>> updateMemberApi(@PathVariable Long id, @Valid @RequestBody MemberDTO memberDTO) {
+    public ResponseEntity<ApiResponse<Member>> updateMember(@PathVariable Long id, @Valid @RequestBody MemberDTO memberDTO) {
         Member member = memberService.updateMember(id, memberDTO.getName(), memberDTO.getPhone());
         return ResponseEntity.ok(ApiResponse.success(member, "Member updated successfully"));
     }
 
     @PatchMapping("/{id}/deactivate")
-    public ResponseEntity<ApiResponse<Void>> deactivateMemberApi(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deactivateMember(@PathVariable Long id) {
         memberService.deactivateMember(id);
         return ResponseEntity.ok(ApiResponse.success("Member deactivated successfully"));
     }
 
     @PatchMapping("/{id}/activate")
-    public ResponseEntity<ApiResponse<Void>> activateMemberApi(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> activateMember(@PathVariable Long id) {
         memberService.activateMember(id);
         return ResponseEntity.ok(ApiResponse.success("Member activated successfully"));
     }

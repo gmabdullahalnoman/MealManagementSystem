@@ -30,42 +30,40 @@ public class ExpenseController {
     @Autowired
     private ExpenseService expenseService;
 
-    // sessionService not required for REST endpoints
-
     @GetMapping("/session/{sessionId}")
-    public ResponseEntity<ApiResponse<List<Expense>>> getExpensesBySessionApi(@PathVariable Long sessionId) {
+    public ResponseEntity<ApiResponse<List<Expense>>> getExpensesBySession(@PathVariable Long sessionId) {
         List<Expense> expenses = expenseService.getExpensesBySession(sessionId);
         return ResponseEntity.ok(ApiResponse.success(expenses, "Expenses retrieved successfully"));
     }
 
     @GetMapping("/session/{sessionId}/total")
-    public ResponseEntity<ApiResponse<Double>> getTotalExpensesBySessionApi(@PathVariable Long sessionId) {
+    public ResponseEntity<ApiResponse<Double>> getTotalExpensesBySession(@PathVariable Long sessionId) {
         Double total = expenseService.getTotalExpensesBySession(sessionId);
         return ResponseEntity.ok(ApiResponse.success(total, "Total expenses calculated successfully"));
     }
 
     @GetMapping("/date-range")
-    public ResponseEntity<ApiResponse<List<Expense>>> getExpensesByDateRangeApi(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+    public ResponseEntity<ApiResponse<List<Expense>>> getExpensesByDateRange(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                                     @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         List<Expense> expenses = expenseService.getExpensesByDateRange(startDate, endDate);
         return ResponseEntity.ok(ApiResponse.success(expenses, "Expenses in date range retrieved successfully"));
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Expense>> addExpenseApi(@Valid @RequestBody ExpenseDTO expenseDTO) {
+    public ResponseEntity<ApiResponse<Expense>> addExpense(@Valid @RequestBody ExpenseDTO expenseDTO) {
         Expense expense = expenseService.addExpense(expenseDTO.getSessionId(), expenseDTO.getExpenseDate(),
                 expenseDTO.getAmount(), expenseDTO.getDescription(), expenseDTO.getMemberId());
         return ResponseEntity.status(201).body(ApiResponse.success(expense, "Expense added successfully"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Expense>> updateExpenseApi(@PathVariable Long id, @Valid @RequestBody ExpenseDTO expenseDTO) {
+    public ResponseEntity<ApiResponse<Expense>> updateExpense(@PathVariable Long id, @Valid @RequestBody ExpenseDTO expenseDTO) {
         Expense expense = expenseService.updateExpense(id, expenseDTO.getAmount(), expenseDTO.getDescription());
         return ResponseEntity.ok(ApiResponse.success(expense, "Expense updated successfully"));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteExpenseApi(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteExpense(@PathVariable Long id) {
         expenseService.deleteExpense(id);
         return ResponseEntity.ok(ApiResponse.success("Expense deleted successfully"));
     }

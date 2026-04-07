@@ -27,38 +27,38 @@ public class DepositController {
     private DepositService depositService;
 
     @GetMapping("/session/{sessionId}")
-    public ResponseEntity<ApiResponse<List<Deposit>>> getDepositsBySessionApi(@PathVariable Long sessionId) {
+    public ResponseEntity<ApiResponse<List<Deposit>>> getDepositsBySession(@PathVariable Long sessionId) {
         List<Deposit> deposits = depositService.getDepositsBySession(sessionId);
         return ResponseEntity.ok(ApiResponse.success(deposits, "Deposits retrieved successfully"));
     }
 
     @GetMapping("/session/{sessionId}/total")
-    public ResponseEntity<ApiResponse<Double>> getTotalDepositsBySessionApi(@PathVariable Long sessionId) {
+    public ResponseEntity<ApiResponse<Double>> getTotalDepositsBySession(@PathVariable Long sessionId) {
         Double total = depositService.getTotalDepositsBySession(sessionId);
         return ResponseEntity.ok(ApiResponse.success(total, "Total deposits calculated successfully"));
     }
 
     @GetMapping("/member/{memberId}")
-    public ResponseEntity<ApiResponse<List<Deposit>>> getDepositsByMemberApi(@PathVariable Long memberId) {
+    public ResponseEntity<ApiResponse<List<Deposit>>> getDepositsByMember(@PathVariable Long memberId) {
         List<Deposit> deposits = depositService.getDepositsByMember(memberId);
         return ResponseEntity.ok(ApiResponse.success(deposits, "Member deposits retrieved successfully"));
     }
 
     @GetMapping("/session/{sessionId}/member/{memberId}/total")
-    public ResponseEntity<ApiResponse<Double>> getMemberDepositsApi(@PathVariable Long sessionId, @PathVariable Long memberId) {
+    public ResponseEntity<ApiResponse<Double>> getMemberDeposits(@PathVariable Long sessionId, @PathVariable Long memberId) {
         Double total = depositService.getMemberDeposits(sessionId, memberId);
         return ResponseEntity.ok(ApiResponse.success(total, "Member deposit total calculated successfully"));
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Deposit>> addDepositApi(@Valid @RequestBody DepositDTO depositDTO) {
+    public ResponseEntity<ApiResponse<Deposit>> addDeposit(@Valid @RequestBody DepositDTO depositDTO) {
         Deposit deposit = depositService.addDeposit(depositDTO.getSessionId(), depositDTO.getMemberId(),
                 depositDTO.getAmount(), depositDTO.getDepositDate(), depositDTO.getType(), depositDTO.getNote());
         return ResponseEntity.status(201).body(ApiResponse.success(deposit, "Deposit added successfully"));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteDepositApi(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteDeposit(@PathVariable Long id) {
         depositService.deleteDeposit(id);
         return ResponseEntity.ok(ApiResponse.success("Deposit deleted successfully"));
     }

@@ -1,0 +1,49 @@
+# ============================================================
+# APPLICATION DEVELOPMENT PROPERTIES
+# ============================================================
+# This is a template file for local development
+# Copy this to application-dev.properties and update values
+# DO NOT commit application-dev.properties to GitHub
+# ============================================================
+
+# ============================================================
+# DATABASE CONFIGURATION - PostgreSQL (Local Development)
+# ============================================================
+spring.datasource.url=jdbc:postgresql://localhost:5432/mealmanagementdb
+spring.datasource.username=postgres
+spring.datasource.password=postgres
+spring.datasource.hikari.maximum-pool-size=5
+spring.datasource.hikari.minimum-idle=1
+
+# ============================================================
+# JPA/HIBERNATE CONFIGURATION
+# ============================================================
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=validate
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.use_sql_comments=true
+spring.jpa.open-in-view=false
+
+# ============================================================
+# LOGGING CONFIGURATION (Development)
+# ============================================================
+logging.level.root=INFO
+logging.level.com.mealmanager=DEBUG
+logging.level.org.springframework.web=DEBUG
+logging.level.org.hibernate.SQL=DEBUG
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
+
+# ============================================================
+# SERVER CONFIGURATION
+# ============================================================
+server.port=8080
+server.error.include-message=always
+server.error.include-binding-errors=always
+server.error.include-stacktrace=on_param
+
+# ============================================================
+# ACTUATOR (for monitoring)
+# ============================================================
+management.endpoints.web.exposure.include=health,info
+management.endpoint.health.show-details=always
